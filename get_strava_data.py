@@ -19,32 +19,35 @@ def get_my_activities():
 def create_activities_table(json_data):
     cols = list(json_data[1].keys())
     q = ('CREATE TABLE IF NOT EXISTS activities('
-         'start_date_local DATETIME '
-         'distance FLOAT'
+         'start_date_local DATETIME, '
+         'distance REAL'
          ')')
 
-    #c.execute("sdf")
+    c.execute(q)
 
-def activities_to_sql():
+def activities_to_sql(json_data):
     '''insert into activities table'''
-    c.execute("INSERT INTO activities values(?, ?)")
-    c.commit()
+
+    for item in json_data:
+
+        print(item["start_date_local"])
+        print(item["distance"])
+
+        c.execute("INSERT INTO activities(start_date_local, distance) VALUES(?, ?)",
+                  (item["start_date_local"],
+                   item["distance"]))
 
 def main():
     #create_activities_table()
 
     json_data = get_my_activities()
 
+    create_activities_table(json_data)
 
+    activities_to_sql(json_data)
 
-    for item in json_data:
-        print(item["start_date_local"])
-        print(item["distance"])
-
-    return(json_data)
-
-
-
+    conn.commit()
+    conn.close()
 
 if __name__ == "__main__":
-    json_data = main()
+    main()
