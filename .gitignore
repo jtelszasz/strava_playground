@@ -1,3 +1,5 @@
-secret.py
+venv/*
+*.sqlite
 *.zip
 *.pyc
+*.db

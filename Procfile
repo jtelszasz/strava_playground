@@ -1,1 +1,1 @@
-web: flask db upgrade; flask translate compile; gunicorn my_strava_app:app
+web: flask db upgrade; flask translate compile; gunicorn strava_playground:app
