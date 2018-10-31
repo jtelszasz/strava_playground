@@ -3,3 +3,4 @@ venv/*
 *.zip
 *.pyc
 *.db
+*.idea
