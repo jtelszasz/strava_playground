@@ -1,7 +1,11 @@
-from app import app
-from app.analytics import get_my_activities_json, create_activities_table
+from app import app, db
+from app.analytics import get_my_activities_json
+from app.models import Activity
 from flask import render_template
-import sqlite3
+from datetime import datetime
+
+db.create_all()
+db.session.commit()
 
 @app.route('/')
 @app.route('/index')
@@ -9,28 +13,18 @@ def index():
     # get activities from strava
     activities_json = get_my_activities_json()
 
-    conn = sqlite3.connect(app.config["DATABASE_URL"])
-    c = conn.cursor()
-
-    create_activities_table(c)
-
-    # add any new ones to the db
     for item in activities_json:
+        if db.session.query(Activity).filter_by(id=item["id"]).scalar() is None:
+            act = Activity(
+                id = item["id"],
+                distance = item["distance"],
+                start_date = datetime.strptime(item["start_date_local"],
+                                               '%Y-%m-%dT%H:%M:%SZ')
+            )
+            db.session.add(act)
 
-        c.execute("SELECT id FROM activities WHERE id = ?;", (int(item["id"]),))
+    db.session.commit()
 
-        if not c.fetchone():
-            c.execute("INSERT INTO activities(id, start_date_local, distance) VALUES(?, ?, ?)",
-                      (item["id"],
-                       item["start_date_local"],
-                       item["distance"]))
-
-    c.execute("SELECT COUNT(*) FROM activities;")
-    n_acts = c.fetchone()[0]
-
-    c.close()
-    conn.close()
-
-
+    n_acts = db.session.query(Activity).count()
     user = {"username" : "Justin"}
-    return render_template('index.html', title="Justin's Strava Playground", user=user, n_acts=n_acts, data=activities_json)
+    return render_template('index.html', title="Justin's Strava Playground", user=user, n_acts=n_acts)
