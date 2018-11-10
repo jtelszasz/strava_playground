@@ -6,4 +6,4 @@ SQLAlchemy==1.2.13
 
 # requirements for Heroku
 #psycopg2==2.7.3.1
-#gunicorn==19.9.0
+gunicorn==19.9.0
