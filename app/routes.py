@@ -3,6 +3,7 @@ from app.analytics import get_my_activities_json
 from app.models import Activity
 from flask import render_template
 from datetime import datetime
+import pandas as pd
 
 db.create_all()
 db.session.commit()
@@ -26,5 +27,7 @@ def index():
     db.session.commit()
 
     n_acts = db.session.query(Activity).count()
-    user = {"username" : "Justin"}
-    return render_template('index.html', title="Justin's Strava Playground", user=user, n_acts=n_acts)
+
+    activities = pd.read_sql(db.session.query(Activity).statement, db.engine)
+
+    return render_template('index.html', title="Justin's Strava Playground", n_acts=n_acts, activities=activities)

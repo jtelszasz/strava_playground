@@ -1,5 +1,6 @@
 import requests
 import ssl
+import pandas as pd
 
 from app import app
 
@@ -23,3 +24,5 @@ def get_my_activities_json():
         query_dict["page"] += 1
 
     return json_data
+
+
