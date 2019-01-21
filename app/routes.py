@@ -20,7 +20,10 @@ def index():
                 id = item["id"],
                 distance = item["distance"],
                 start_date = datetime.strptime(item["start_date_local"],
-                                               '%Y-%m-%dT%H:%M:%SZ')
+                                               '%Y-%m-%dT%H:%M:%SZ'),
+                bike = item["gear"]["name"],
+                elapsed_time = item["elapsed_time"],
+                moving_time = item["moving_time"]
             )
             db.session.add(act)
 
